@@ -1,0 +1,236 @@
+# =============================================================================
+#  rules.yaml  —  REGLAS DE DETECCIÓN DE PRUEBAS UNITARIAS, UNA POR TECNOLOGÍA
+# =============================================================================
+#  Idea clave: el motor (código Python) es siempre el mismo. Lo que cambia entre
+#  tecnologías son ESTAS reglas. Para soportar un lenguaje nuevo se agrega un
+#  bloque en este archivo; no hace falta tocar el código.
+#
+#  Todos los patrones son expresiones regulares (regex). Van entre comillas
+#  simples ' ' para que la barra invertida \ se lea literal.
+#  (Dentro de comillas simples, una comilla simple se escribe doble: '' )
+#
+#  Campos de cada tecnología:
+#    name                  Nombre que se muestra en la tabla.
+#    manifests             Archivos "de proyecto" que delatan la tecnología (acepta comodines *).
+#    extensions            Extensiones del código fuente de esa tecnología.
+#    fallback_by_extension Si es true, basta con ver archivos de código aunque no haya manifiesto.
+#    flavors               Variante o framework (Angular, Spring Boot...). Se busca en los manifiestos.
+#    framework_required    ¿Se necesita declarar una librería para probar? (Go y Python no siempre.)
+#    framework_patterns    Librerías de pruebas a buscar dentro de los manifiestos.
+#    test_paths            Rutas que indican "esto es un archivo de pruebas".
+#    test_exclude_paths    Rutas que parecen pruebas pero NO son unitarias (e2e, fixtures...).
+#    case_patterns         Cómo se ve UN caso de prueba dentro del archivo (p.ej. @Test).
+#    trivial_patterns      Casos "de plantilla" que generan las herramientas (contextLoads...).
+#    ci_patterns           Comandos que ejecutan pruebas dentro de los pipelines de CI.
+#    ci_skip_patterns      Si la línea también contiene esto, NO cuenta (p.ej. -DskipTests).
+# =============================================================================
+version: 1
+
+settings:
+  max_manifests: 6          # cuántos manifiestos leer como máximo por tecnología
+  max_ci_files: 6           # cuántos archivos de CI leer como máximo por repo
+  sample_test_files: 5      # cuántos archivos de prueba abrir para contar casos
+  max_file_bytes: 200000    # no leer más de esto por archivo
+  # Carpetas que nunca cuentan (código de terceros o generado):
+  ignore_paths: '(^|/)(node_modules|vendor|\.git|dist|build|target|out|venv|\.venv|site-packages|__pycache__|bower_components)/'
+  # Dónde buscar pipelines de CI (GitHub Actions, Jenkins, Azure DevOps, GitLab, Bitbucket):
+  ci_files:
+    - '^\.github/workflows/[^/]+\.ya?ml$'
+    - '(^|/)Jenkinsfile[^/]*$'
+    - '(^|/)azure-pipelines[^/]*\.ya?ml$'
+    - '(^|/)\.gitlab-ci\.ya?ml$'
+    - '(^|/)bitbucket-pipelines\.ya?ml$'
+
+# Extensiones de lenguajes que AÚN no tienen reglas. Si un repo tiene código de estos
+# lenguajes y ninguno de los de abajo, se marca "Indeterminado" (en vez de mentir con un "No").
+unsupported_extensions:
+  .rb: Ruby
+  .rs: Rust
+  .swift: Swift
+  .c: C/C++
+  .cpp: C/C++
+  .cc: C/C++
+  .h: C/C++
+  .scala: Scala
+  .dart: Dart
+  .ex: Elixir
+  .exs: Elixir
+  .pl: Perl
+  .cbl: COBOL
+  .cob: COBOL
+  .lua: Lua
+
+ecosystems:
+
+  # ---------------------------------------------------------------- Java / Kotlin
+  java:
+    name: Java
+    manifests: [pom.xml, build.gradle, build.gradle.kts]
+    extensions: [.java, .kt, .groovy]
+    flavors:
+      'Java (Spring Boot)': 'spring-boot'
+      'Kotlin': 'kotlin'
+    framework_required: true
+    framework_patterns:
+      - 'junit'
+      - 'testng'
+      - 'mockito'
+      - 'spock'
+      - 'assertj'
+      - 'spring-boot-starter-test'
+      - 'useJUnitPlatform'
+    test_paths:
+      - '(^|/)src/test/(java|kotlin|groovy)/.+\.(java|kt|groovy)$'
+    test_exclude_paths: []
+    case_patterns:
+      - '@(Test|ParameterizedTest|RepeatedTest|TestFactory)\b'
+    trivial_patterns:
+      - 'void\s+contextLoads\s*\('          # test vacío que genera Spring Initializr
+    ci_patterns:
+      - '\bmvnw?\b.*\b(test|verify|install|package)\b'
+      - '\bgradlew?\b.*\b(test|check|build)\b'
+    ci_skip_patterns:
+      - 'skipTests'
+      - 'maven\.test\.skip'
+      - '-x\s+test'
+
+  # ---------------------------------------------------- JavaScript / TypeScript
+  javascript:
+    name: JavaScript/TypeScript
+    manifests: [package.json]
+    extensions: [.js, .jsx, .ts, .tsx, .mjs, .cjs, .vue]
+    flavors:
+      'Angular': '"@angular/core"'
+      'NestJS': '"@nestjs/core"'
+      'Next.js': '"next"\s*:'
+      'React': '"react"\s*:'
+      'Vue': '"vue"\s*:'
+    framework_required: true
+    framework_patterns:
+      - '"(jest|vitest|mocha|jasmine-core|karma|ava|tape|uvu|ts-jest|jest-preset-angular)"\s*:'
+      - '"@(testing-library/[\w-]+|web/test-runner|jest/core)"\s*:'
+    test_paths:
+      - '\.(spec|test)\.(js|jsx|ts|tsx|mjs|cjs)$'
+      - '(^|/)(__tests__|tests?|spec)/.+\.(js|jsx|ts|tsx|mjs|cjs)$'
+    test_exclude_paths:
+      - '(^|/)(e2e|cypress|playwright|integration|fixtures?|mocks?|__mocks__|__snapshots__)/'
+      - '\.e2e[-.]spec\.'
+      - '\.(cy|e2e)\.(js|ts)$'
+      - '\.d\.ts$'
+    case_patterns:
+      - '(^|[^\w.])(it|test)\s*\('
+      - '(^|[^\w.])(it|test)\.each\b'
+    trivial_patterns:
+      - '(^|[^\w.])it\s*\(\s*[''"`]should (create|be created|have as title|render title)'  # plantilla de Angular CLI
+      - 'renders learn react link'                                                           # plantilla de Create React App
+    ci_patterns:
+      - '\b(npm|pnpm|yarn)\s+(run\s+)?(test|t)\b'
+      - '\bng\s+test\b'
+      - '\bnpx\s+(jest|vitest|karma|mocha)\b'
+      - '\bmake\s+test\b'
+    ci_skip_patterns: []
+
+  # ------------------------------------------------------------------- Python
+  python:
+    name: Python
+    manifests: [requirements.txt, requirements-dev.txt, requirements-test.txt, pyproject.toml, setup.py, setup.cfg, Pipfile, tox.ini, pytest.ini]
+    extensions: [.py]
+    fallback_by_extension: true
+    flavors:
+      'Python (Django)': 'django'
+      'Python (FastAPI)': 'fastapi'
+      'Python (Flask)': 'flask'
+    framework_required: false            # unittest viene incluido en Python
+    framework_patterns:
+      - 'pytest'
+      - 'unittest'
+      - 'nose'
+      - 'tox'
+      - 'hypothesis'
+    test_paths:
+      - '(^|/)test_[^/]+\.py$'
+      - '(^|/)[^/]+_test\.py$'
+      - '(^|/)tests?/(?!.*(__init__|conftest)\.py$).+\.py$'
+    test_exclude_paths:
+      - '(^|/)(fixtures?|mocks?)/'
+    case_patterns:
+      - '^\s*(async\s+)?def\s+test\w*\s*\('
+    trivial_patterns: []
+    ci_patterns:
+      - '\bpytest\b'
+      - '\bpython3?\s+-m\s+(pytest|unittest)\b'
+      - '\b(tox|nox)\b'
+      - 'manage\.py\s+test\b'
+      - '\bmake\s+test\b'
+    ci_skip_patterns:
+      - 'pip3?\s+install'
+      - 'apt(-get)?\s+install'
+
+  # --------------------------------------------------------------------- C# / .NET
+  dotnet:
+    name: C#/.NET
+    manifests: ['*.csproj', '*.sln']
+    extensions: [.cs]
+    framework_required: true
+    framework_patterns:
+      - 'xunit'
+      - 'nunit'
+      - 'mstest'
+      - 'Microsoft\.NET\.Test\.Sdk'
+    test_paths:
+      - '(^|/)[^/]*\.(Unit)?Tests?/.+\.cs$'
+      - '(Tests?|Specs?)\.cs$'
+    test_exclude_paths: []
+    case_patterns:
+      - '\[(Fact|Theory|Test|TestCase|TestMethod)\b'
+    trivial_patterns:
+      - 'void\s+Test1\s*\('                  # plantilla del proyecto de pruebas xUnit
+    ci_patterns:
+      - '\bdotnet\s+test\b'
+    ci_skip_patterns: []
+
+  # ------------------------------------------------------------------------- Go
+  go:
+    name: Go
+    manifests: [go.mod]
+    extensions: [.go]
+    fallback_by_extension: true
+    framework_required: false            # Go trae el framework de pruebas incluido
+    framework_patterns: ['testify', 'ginkgo', 'gomega']
+    test_paths:
+      - '_test\.go$'
+    test_exclude_paths: []
+    case_patterns:
+      - '^func\s+Test\w*\s*\('
+    trivial_patterns: []
+    ci_patterns:
+      - '\bgo\s+test\b'
+      - '\bgotestsum\b'
+      - '\bmake\s+test\b'
+    ci_skip_patterns: []
+
+  # -------------------------------------------------------------------------- PHP
+  #  Ejemplo de "agregar un lenguaje nuevo": solo es este bloque de datos.
+  php:
+    name: PHP
+    manifests: [composer.json]
+    extensions: [.php]
+    fallback_by_extension: true
+    framework_required: true
+    framework_patterns: ['phpunit', 'pestphp', 'codeception']
+    test_paths:
+      - '(^|/)tests?/.+\.php$'
+    test_exclude_paths:
+      - '(^|/)(fixtures?|mocks?)/'
+    case_patterns:
+      - 'function\s+test\w+\s*\('
+      - '@test\b'
+      - '#\[Test\]'
+    trivial_patterns:
+      - 'function\s+(test_the_application_returns_a_successful_response|test_that_true_is_true)\s*\('   # plantilla de Laravel
+    ci_patterns:
+      - '\bphpunit\b'
+      - '\bcomposer\s+(run\s+)?test\b'
+      - '\bpest\b'
+      - '\bmake\s+test\b'
+    ci_skip_patterns: []

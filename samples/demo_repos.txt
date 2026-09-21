@@ -1,0 +1,16 @@
+# Repos públicos de distintas tecnologías + los repos públicos de Diego.
+# Formato: owner/repo (también se aceptan URLs completas)
+spring-projects/spring-petclinic
+spring-guides/gs-rest-service
+pallets/flask
+karpathy/nanoGPT
+karpathy/minGPT
+gin-gonic/gin
+expressjs/express
+gothinkster/angular-realworld-example-app
+jasontaylordev/CleanArchitecture
+laravel/laravel
+github/gitignore
+octocat/Hello-World
+Diegox-Mome/app-modelo
+Diegox-Mome/colegio-ie1267-web

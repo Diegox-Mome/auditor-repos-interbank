@@ -1,0 +1,13 @@
+Repositorio,Real,Comentario
+spring-projects/spring-petclinic,Sí,Suite JUnit completa en src/test/java
+spring-guides/gs-rest-service,Sí,Tests de controlador en las carpetas complete*
+pallets/flask,Sí,Suite pytest grande en tests/
+karpathy/nanoGPT,No,Sin carpeta de pruebas
+karpathy/minGPT,Sí,Prueba real en tests/ (poca cobertura)
+gin-gonic/gin,Sí,Cientos de *_test.go
+expressjs/express,Sí,Suite mocha en test/
+gothinkster/angular-realworld-example-app,Sí,Specs reales con vitest
+jasontaylordev/CleanArchitecture,Sí,Pruebas .NET y Angular
+laravel/laravel,No,Solo tests de ejemplo de la plantilla (etiqueta puesta DESPUÉS de ver el resultado: ver README)
+github/gitignore,No aplica,Solo archivos .gitignore
+octocat/Hello-World,No aplica,Solo un README

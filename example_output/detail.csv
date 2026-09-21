@@ -1,0 +1,15 @@
+﻿Repositorio,Tecnología,Veredicto,Confianza,Framework declarado,Archivos de prueba,Casos reales (muestra),CI ejecuta pruebas,Evidencia
+Diegox-Mome/app-modelo,Python,No,Alta,no,0,,no,sin archivos de prueba
+Diegox-Mome/colegio-ie1267-web,React,No,Alta,no,0,,no,sin archivos de prueba
+expressjs/express,JavaScript/TypeScript,Sí,Alta,sí,91,34,sí,91 archivo(s) de prueba (p.ej. test/Route.js); framework declarado (mocha); CI ejecuta pruebas (.github/workflows/ci.yml); 34 caso(s) de prueba reales en 5 archivo(s) revisado(s)
+gin-gonic/gin,Go,Sí,Alta,sí,40,200,sí,40 archivo(s) de prueba (p.ej. auth_test.go); framework declarado (testify); CI ejecuta pruebas (.github/workflows/gin.yml); 200 caso(s) de prueba reales en 5 archivo(s) revisado(s)
+gothinkster/angular-realworld-example-app,Angular,Sí,Media,sí,6,142,no,6 archivo(s) de prueba (p.ej. src/app/core/auth/services/jwt.service.spec.ts); framework declarado (vitest); 142 caso(s) de prueba reales en 5 archivo(s) revisado(s) (+6 de plantilla ignorados)
+jasontaylordev/CleanArchitecture,Angular,Sí,Media,sí,2,2,no,2 archivo(s) de prueba (p.ej. src/Web/ClientApp/src/api-authorization/authorize.interceptor.spec.ts); framework declarado (jasmine-core); 2 caso(s) de prueba reales en 2 archivo(s) revisado(s) (+1 de plantilla ignorados)
+jasontaylordev/CleanArchitecture,C#/.NET,Sí,Alta,sí,12,13,sí,12 archivo(s) de prueba (p.ej. tests/Domain.UnitTests/ValueObjects/ColourTests.cs); framework declarado (nunit); CI ejecuta pruebas (.github/workflows/build.yml); 13 caso(s) de prueba reales en 5 archivo(s) revisado(s)
+karpathy/minGPT,Python,Sí,Media,no,1,1,no,1 archivo(s) de prueba (p.ej. tests/test_huggingface_import.py); 1 caso(s) de prueba reales en 1 archivo(s) revisado(s)
+karpathy/nanoGPT,Python,No,Alta,no,0,,no,sin archivos de prueba
+laravel/laravel,JavaScript/TypeScript,No,Alta,no,0,,no,sin archivos de prueba
+laravel/laravel,PHP,No,Media,sí,3,0,no,3 archivo(s) de prueba (p.ej. tests/TestCase.php); framework declarado (phpunit); solo casos de plantilla generados automáticamente
+pallets/flask,Python (Flask),Sí,Alta,sí,37,47,sí,37 archivo(s) de prueba (p.ej. tests/test_appctx.py); framework declarado (pytest); CI ejecuta pruebas (.github/workflows/tests.yaml); 47 caso(s) de prueba reales en 5 archivo(s) revisado(s)
+spring-guides/gs-rest-service,Java (Spring Boot),Sí,Alta,sí,4,5,sí,4 archivo(s) de prueba (p.ej. complete-kotlin/src/test/kotlin/com/example/restservice/GreetingControllerTests.kt); framework declarado (junit); CI ejecuta pruebas (.github/workflows/continuous-integration-build.yml); 5 caso(s) de prueba reales en 4 archivo(s) revisado(s) (+1 de plantilla ignorados)
+spring-projects/spring-petclinic,Java (Spring Boot),Sí,Alta,sí,20,13,sí,20 archivo(s) de prueba (p.ej. src/test/java/org/springframework/samples/petclinic/MySqlIntegrationTests.java); framework declarado (junit); CI ejecuta pruebas (.github/workflows/gradle-build.yml); 13 caso(s) de prueba reales en 5 archivo(s) revisado(s)

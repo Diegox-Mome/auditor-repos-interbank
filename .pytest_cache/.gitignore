@@ -1,0 +1,21 @@
+# Caché de Python y pytest
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.cache/
+
+# Entornos virtuales 
+venv/
+.venv/
+env/
+
+# Resultados y salidas locales
+output/
+example_output/
+*.csv
+*.jsonl
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db

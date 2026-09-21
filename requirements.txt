@@ -1,0 +1,4 @@
+requests>=2.31
+PyYAML>=6.0
+# solo para correr las pruebas del proyecto:
+pytest>=8.0
