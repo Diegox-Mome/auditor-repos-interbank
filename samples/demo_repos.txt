@@ -14,3 +14,4 @@ github/gitignore
 octocat/Hello-World
 Diegox-Mome/app-modelo
 Diegox-Mome/colegio-ie1267-web
+Diegox-Mome/auditor-repos-interbank
